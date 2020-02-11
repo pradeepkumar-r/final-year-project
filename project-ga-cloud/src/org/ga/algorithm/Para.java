@@ -91,4 +91,63 @@ public class Para {
 		return cloudletsList;
 	}
 
+	public int GetGenerationSize() {
+		return generationSize;
+	}
+
+	/* for EFFICIENT test (temporary) */
+	public int GetOption() {
+		int currentOpt = 0;
+		switch (useOption) {
+		case "ga":
+			currentOpt = 1;
+			SetSelectionPolicy("Randomly");
+			break;
+		case "btga":
+			currentOpt = 2;
+			SetSelectionPolicy("Best-Two");
+			break;
+		case "rwga":
+			currentOpt = 3;
+			SetSelectionPolicy("Roulette-Wheel");
+			break;
+		case "tsga":
+			currentOpt = 4;
+			SetSelectionPolicy("Tournament");
+			break;
+		case "tsga-A":
+			currentOpt = 5;
+			SetSelectionPolicy("Tournament"); // set in parameters
+			break;
+		default:
+			break;
+		}
+
+		return currentOpt;
+	}
+
+	public void SetSelectionPolicy(String sepo) {
+		this.selectionPolicy = sepo;
+		// return selectionPolicy;
+	}
+
+	public String GetSelectionPolicy() {
+		return selectionPolicy;
+	}
+
+	public int GetTournamentSize() {
+		return tournamentSize;
+	}
+
+	public double GetTournamentRate() {
+		return tournamentRate;
+	}
+
+	public double GetCrossoverRate() {
+		return crossoverRate;
+	}
+
+	public String GetCrossoverPolicy() {
+		return crossoverPolicy;
+	}
 }

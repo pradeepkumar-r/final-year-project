@@ -26,6 +26,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
+import org.ga.algorithm.Sch;
 
 public class EstablishmentService {
 
@@ -228,6 +229,8 @@ public class EstablishmentService {
 				// int ctId = results.get(i + 1);
 				// broker.bindCloudletToVm(ctId, vmId);
 				// }
+				Sch s = new Sch(vmList, cloudletList);
+				s.Execute();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

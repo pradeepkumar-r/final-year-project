@@ -10,6 +10,10 @@ public class Sch {
 	List<Cloudlet> ctList = null;
 	Para parameters = null;
 
+	// public Sch() {
+	//
+	// }
+
 	public Sch(List<Vm> vmlist, List<Cloudlet> ctlist) {
 		parameters = new Para("E:\\genetic_algorithm.xml");
 		parameters.Apply(vmlist, ctlist);

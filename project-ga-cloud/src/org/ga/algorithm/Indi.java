@@ -11,6 +11,12 @@ import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Vm;
 
 public class Indi {
+	private Indi(Indi old) {// duplication
+		// new this
+		old.Show();
+		old.Cover(this);// this refer to dup new
+	}
+
 	private class Atom {// implements Clonable{
 		private int Id = 0;
 		private Vm resource = null;
@@ -43,6 +49,33 @@ public class Indi {
 			return procTime;
 		}
 
+		public Atom Duplicate() {
+			return new Atom(this);
+		}
+
+		public void SwapWith(Atom old) {
+			Vm tmpVm = old.resource;
+			old.SetVM(this.GetVM());
+			this.SetVM(tmpVm);
+			return;
+		}
+
+		public void SetVM(Vm k) {
+			resource = k;
+		}
+
+		private Atom(Atom old) {
+			Id = old.Id;
+			resource = old.resource;
+			task = old.task;
+			binString = old.binString;
+			procTime = old.procTime;
+			// ystem.out.println("Atom old constructor printing");
+			// System.out.println(
+			// old.Id + " " + old.resource. + " " + old.task + " " + " " + old.binString + "
+			// " + old.procTime);
+		}
+
 	}// end of Atom
 
 	private Random random = new Random();
@@ -52,8 +85,9 @@ public class Indi {
 	private double doneTime = 0.00;
 	private double fitValue = 0.00;
 	private int selfIdx = 0;
+	private static int globalIdx = 0;
 
-	// ct,vm passess to atom(initialization part)
+	// ct,vm passess to atom(initialization part)//check it
 	public Indi(List<Vm> vmlist, List<Cloudlet> ctlist) {
 		for (Cloudlet ct : ctlist) {
 			int rn = random.nextInt(vmlist.size());
@@ -133,4 +167,107 @@ public class Indi {
 		return fitValue;
 	}
 
+	public Indi Duplicate(Indi... indvs) {
+		Indi dup = null;
+		if (indvs.length == 0) {
+			System.out.println("Printing when no part");
+			dup = new Indi(this);
+		} else {
+			dup = indvs[0];
+			System.out.println("Printing duplicate indvi[0]");
+			indvs[0].Show();
+			this.Cover(dup);
+		}
+		dup.Evaluate();
+		return dup;
+	}
+
+	// Best individual cloning for new generation
+	private Indi Cover(Indi newObj) {
+		newObj.GetAtoms().clear();
+		for (Atom atom : GetAtoms()) { // old indi atoms
+			newObj.GetAtoms().add(atom.Duplicate()); // return new atom obj clone
+		}
+		// Todo: copy the geneMap
+		newObj.fitValue = fitValue;
+		newObj.doneTime = doneTime;
+		return newObj;
+	}
+
+	public int GenIdx() {
+		selfIdx = globalIdx++;
+		return selfIdx;
+	}
+
+	public boolean crossoverOnePoint(Indi oppr) {
+		Indi b1 = this;
+		Indi b2 = oppr;
+		int size = 0, p1 = 0;
+		size = b1.GetAtoms().size();
+		p1 = random.nextInt(size);
+		System.out.println("random integer for one point cross over" + p1);
+		for (int j = 0; j <= p1; j++) {
+			Atom g1 = b1.GetAtoms().get(j);
+			Atom g2 = b2.GetAtoms().get(j);
+			g1.SwapWith(g2);
+		}
+		System.out.println();
+		System.out.println("------------------ After CrossOver ----------------");
+		b1.Show();
+		b2.Show();
+		return true;
+	}
+
+	public boolean crossoverTwoPoint(Indi oppr) {
+		Indi b1 = this;
+		Indi b2 = oppr;
+		int size = 0, p1 = 0, p2 = 0, pp = 0;
+		size = b1.GetAtoms().size();
+		p1 = random.nextInt(size);
+		p2 = random.nextInt(size);
+		if (p1 > p2) {
+			pp = p2;
+			p2 = p1;
+			p1 = pp;
+		}
+
+		for (int j = 0; j <= p1; j++) {
+			Atom g1 = b1.GetAtoms().get(j);
+			Atom g2 = b2.GetAtoms().get(j);
+			g1.SwapWith(g2);
+		}
+
+		for (int j = p2; j < size; j++) {
+			Atom g1 = b1.GetAtoms().get(j);
+			Atom g2 = b2.GetAtoms().get(j);
+			g1.SwapWith(g2);
+		}
+		return true;
+	}
+
+	public boolean crossoverUniformly(Indi oppr) {
+		double aProba = 0.5;
+		double bProba = 0.5;
+		Indi b1 = this;
+		Indi b2 = oppr;
+		if (random.nextDouble() < aProba) {
+			for (int j = 0; j < b1.GetAtoms().size(); j++) {
+				if (random.nextFloat() < bProba) {
+					b1.GetAtoms().get(j).SwapWith(b2.GetAtoms().get(j));
+				}
+			}
+		}
+		return true;
+	}
+
+	public List<Integer> Return() {
+		List<Integer> results = new ArrayList<Integer>();
+		for (Entry<Integer, ArrayList<Atom>> entry : geneMap.entrySet()) {
+			for (Atom atom : entry.getValue()) {
+				results.add(new Integer(atom.GetVM().getId()));
+				results.add(new Integer(atom.GetCloudlet().getCloudletId()));
+			}
+		}
+		return results;
+	}
 }
