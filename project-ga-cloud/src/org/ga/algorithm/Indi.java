@@ -13,7 +13,7 @@ import org.cloudbus.cloudsim.Vm;
 public class Indi {
 	private Indi(Indi old) {// duplication
 		// new this
-		old.Show();
+		// old.Show();
 		old.Cover(this);// this refer to dup new
 	}
 
@@ -170,12 +170,12 @@ public class Indi {
 	public Indi Duplicate(Indi... indvs) {
 		Indi dup = null;
 		if (indvs.length == 0) {
-			System.out.println("Printing when no part");
+			// System.out.println("Printing when no part");
 			dup = new Indi(this);
 		} else {
 			dup = indvs[0];
-			System.out.println("Printing duplicate indvi[0]");
-			indvs[0].Show();
+			// System.out.println("Printing duplicate indvi[0]");
+			// indvs[0].Show();
 			this.Cover(dup);
 		}
 		dup.Evaluate();
@@ -204,7 +204,10 @@ public class Indi {
 		Indi b2 = oppr;
 		int size = 0, p1 = 0;
 		size = b1.GetAtoms().size();
-		p1 = random.nextInt(size);
+		// p1 = random.nextInt(size);
+		int max = size - 1;
+		int min = size / 3;
+		p1 = random.nextInt((max - min) + 1) + min;
 		System.out.println("random integer for one point cross over" + p1);
 		for (int j = 0; j <= p1; j++) {
 			Atom g1 = b1.GetAtoms().get(j);
@@ -212,9 +215,10 @@ public class Indi {
 			g1.SwapWith(g2);
 		}
 		System.out.println();
-		System.out.println("------------------ After CrossOver ----------------");
-		b1.Show();
-		b2.Show();
+		// System.out.println("------------------ Before CrossOver ----------------");
+		// b1.Show();
+		// b2.Show();
+		// System.out.println("----------------------------------------------------");
 		return true;
 	}
 

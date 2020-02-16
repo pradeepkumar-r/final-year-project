@@ -230,7 +230,13 @@ public class EstablishmentService {
 				// broker.bindCloudletToVm(ctId, vmId);
 				// }
 				Sch s = new Sch(vmList, cloudletList);
-				s.Execute();
+				List<Integer> results = s.Execute();
+				for (int i = 0; i < results.size(); i += 2) {
+					int vmId = results.get(i);
+					int ctId = results.get(i + 1);
+					broker.bindCloudletToVm(ctId, vmId);
+				}
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
