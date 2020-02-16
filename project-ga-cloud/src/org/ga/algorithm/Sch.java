@@ -27,7 +27,7 @@ public class Sch {
 		int counter = 0;
 
 		lastpop = new Popu(parameters);
-		lastpop.Initialize(); // allocate the optimum
+		lastpop.Initialize(); // initialize the first popu
 
 		bestSolution = lastpop.FindTheBest(lastpop.GetIndividuals());
 		while (counter < parameters.GetGenerationSize()) {
